@@ -12,12 +12,7 @@ HEX = $(OBJCOPY) -O $(FORMAT) -R .eeprom -R .fuse -R .lock -R .signature
 EEP = $(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 --no-change-warnings -O $(FORMAT)
 BIN =
 
-<<<<<<< HEAD
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105523
-ifneq ($(findstring 12.,$(shell avr-gcc --version 2>/dev/null)),)
-=======
 ifeq ("$(shell echo "int main(){}" | $(CC) --param=min-pagesize=0 -x c - -o /dev/null 2>&1)", "")
->>>>>>> 4c625d8286 (Revert "chibios: disable RWX segment warning on newer GNU lds (#22007)" (#22469))
 COMPILEFLAGS += --param=min-pagesize=0
 endif
 
@@ -85,9 +80,7 @@ EXTMEMOPTS =
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
-DEBUG = dwarf-2
-
-# For simulavr only - target MCU frequency.
+DEBUG = dwarf-2 # For simulavr only - target MCU frequency.
 DEBUG_MFREQ = $(F_CPU)
 
 # Set the DEBUG_UI to either gdb or insight.
