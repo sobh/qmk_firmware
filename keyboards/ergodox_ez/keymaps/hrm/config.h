@@ -9,9 +9,9 @@
 
 //---- QMK ---------------------------------------------------------------------
 #undef TAPPING_TERM
-#define TAPPING_TERM 240
+#define TAPPING_TERM 220
 
-// #define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD
 
 //---- Sunaku ------------------------------------------------------------------
 #define BILATERAL_COMBINATIONS
