@@ -1,5 +1,3 @@
-#include "keycodes.h"
-#include "quantum_keycodes.h"
 #include QMK_KEYBOARD_H
 #include "version.h"
 
@@ -59,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                 LT(PAD_L,KC_SPC),     GUI_T(KC_TAB),    KC_ESCAPE,           CW_TOGG,    CTL_T(KC_BACKSPACE),    LT(SYM_L,KC_ENTER)
     ),
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Keypads -------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------- Keypad --------------------------------------------------------------------------------------------------------------------------------
     [PAD_L] = LAYOUT_ergodox_pretty(
         KC_F12,             KC_F1,              KC_F2,              KC_F3,              KC_F4,              KC_F5,          _______,                                    _______,    KC_F6,      KC_F7,              KC_F8,              KC_F9,              KC_F10,             KC_F11,
         _______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_MINUS,           _______,
@@ -87,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM_L] = LAYOUT_ergodox_pretty(
          KC_EQUAL,          KC_EXCLAIM,         KC_AT,              KC_HASH,            KC_DOLLAR,          KC_PERCENT,     _______,                                    _______,    KC_CIRC,    KC_AMPERSAND,       KC_ASTERISK,        KC_LEFT_PAREN,      KC_RIGHT_PAREN,     _______,
         _______,            XXXXXXX,            KC_EXCLAIM,         KC_LCBR,            KC_RCBR,            XXXXXXX,        XXXXXXX,                                    XXXXXXX,    XXXXXXX,    KC_LT,              KC_GT,              KC_QUESTION,        XXXXXXX,            _______,
-        _______,            KC_GRAVE,           KC_TILD,            KC_LEFT_PAREN,      KC_RIGHT_PAREN,     KC_PERCENT,                                                             KC_CIRC,    KC_COMMA,           KC_QUOTE,           KC_DOUBLE_QUOTE,    KC_COLON,           _______,
+        _______,            KC_GRAVE,           KC_TILD,            KC_LEFT_PAREN,      KC_RIGHT_PAREN,     KC_PERCENT,                                                             KC_CIRC,    KC_COLON,           KC_COMMA,           KC_QUOTE,           KC_DOUBLE_QUOTE,    _______,
         _______,            XXXXXXX,            KC_PLUS,            KC_LEFT_BRACKET,    KC_RIGHT_BRACKET,   XXXXXXX,        XXXXXXX,                                    XXXXXXX,    XXXXXXX,    KC_PIPE,            KC_BACKSLASH,       _______,            _______,            _______,
         _______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,                                                                                                _______,            _______,            _______,            _______,            _______,
                                                                                                                             _______,    _______,            _______,    _______,
