@@ -3,25 +3,41 @@
 
 // Layers
 enum layers {
-    BASE_L, // Default
-    PAD_L,  // Keypad
-    SYM_L,  // Symbols
-    NAV_L,  // Navigation
-    MED_L,  // Media
-    ALT_L,  // Alt-Layout
-    // NUM_L,  // Numbers & Function
+	BASE_L, // Default
+	PAD_L, // Keypad
+	SYM_L, // Symbols
+	NAV_L, // Navigation
+	MED_L, // Media
+	ALT_L, // Alt-Layout
+	// NUM_L,  // Numbers & Function
 };
 
 enum custom_keycodes {
-    RGB_SLD = SAFE_RANGE,
-    HSV_0,
-    HSV_2,
-    HSV_3,
-    HSV_4,
-    HSV_5,
-    MAC_LOCK,
+	RGB_SLD = SAFE_RANGE,
+	HSV_0,
+	HSV_2,
+	HSV_3,
+	HSV_4,
+	HSV_5,
+	MAC_LOCK,
 };
 
+// Tap Dance keycods
+enum td_keycodes {
+	TD_ALT_ASTR, // Hold = Alt    , Tap = '*'
+	TD_ALT_DQUO, // Hold = Alt    , Tap = '"'
+	TD_CTL_LPRN, // Hold = Ctrl   , Tap = '('
+	TD_GUI_COLN, // Hold = Super  , Tap = ':'
+	TD_GUI_RPRN, // Hold = Super  , Tap = ')'
+};
+
+typedef struct {
+	uint16_t tap;
+	uint16_t hold;
+	uint16_t held;
+} td_tap_hold_t;
+
+// clang-format off
 /* Keymap 0: Basic layer
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -43,79 +59,82 @@ enum custom_keycodes {
  *                                 |      |ace   | End  |       | PgDn |        |      |
  *                                 `--------------------'       `----------------------'
  */
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Base ----------------------------------------------------------------------------------------------------------------------------------
-    [BASE_L] = LAYOUT_ergodox_pretty(
-        KC_EQUAL,           KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              _______,    KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
-        _______,            KC_Q,               KC_W,               KC_E,               KC_R,               KC_T,           KC_HOME,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               XXXXXXX,
-        _______,            ALT_T(KC_A),        SFT_T(KC_S),        CTL_T(KC_D),        GUI_T(KC_F),        KC_G,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_QUOTE,
-        _______,            KC_Z,               KC_X,               KC_C,               KC_V,               KC_B,           KC_END,                                     KC_WH_D,    KC_N,       KC_M,               XXXXXXX,        KC_DOT,                 KC_SLASH,           KC_COMMA,
-        KC_LEFT_CTRL,       KC_LEFT_SHIFT,      XXXXXXX,            KC_LEFT,            KC_RIGHT,                                                                                               KC_DOWN,            KC_UP,          XXXXXXX,                KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
-                                                                                                                            KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
-                                                                                                                                        KC_F11,             KC_DELETE,
-                                                                                                LT(PAD_L,KC_SPC),     GUI_T(KC_TAB),    KC_ESCAPE,           CW_TOGG,    CTL_T(KC_BACKSPACE),    LT(SYM_L,KC_ENTER)
-    ),
+	//------------------------------------------------------------------------------------------------------------------------------------- Base ----------------------------------------------------------------------------------------------------------------------------------
+	[BASE_L] = LAYOUT_ergodox_pretty(
+		KC_EQUAL,           KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              TG(ALT_L),  KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
+		XXXXXXX,            KC_Q,               KC_W,               KC_E,               KC_R,               KC_T,           KC_HOME,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               XXXXXXX,
+		XXXXXXX,            ALT_T(KC_A),        SFT_T(KC_S),        CTL_T(KC_D),        GUI_T(KC_F),        KC_G,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_QUOTE,
+		XXXXXXX,            KC_Z,               KC_X,               KC_C,               KC_V,               KC_B,           KC_END,                                     KC_WH_D,    KC_N,       KC_M,               KC_COMMA,       KC_DOT,                 KC_SLASH,           XXXXXXX,
+		KC_LEFT_CTRL,       KC_LEFT_SHIFT,      KC_LEFT_ALT,        KC_LEFT,            KC_RIGHT,                                                                                               KC_DOWN,            KC_UP,          KC_LEFT_ALT,            KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
+		                                                                                                                        KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
+		                                                                                                                                    KC_F11,             KC_DELETE,
+		                                                                                            LT(PAD_L,KC_SPC),     GUI_T(KC_TAB),    KC_ESCAPE,          CW_TOGG,    CTL_T(KC_BACKSPACE),    LT(SYM_L,KC_ENTER)
+	),
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Keypad --------------------------------------------------------------------------------------------------------------------------------
-    [PAD_L] = LAYOUT_ergodox_pretty(
-        KC_F12,             KC_F1,              KC_F2,              KC_F3,              KC_F4,              KC_F5,          _______,                                    _______,    KC_F6,      KC_F7,              KC_F8,              KC_F9,              KC_F10,             KC_F11,
-        _______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_MINUS,           _______,
-        TO(BASE_L),         KC_LEFT_ALT,        KC_LEFT_SHIFT,        KC_LEFT_CTRL,       KC_LEFT_GUI,      XXXXXXX,                                                                KC_EQUAL,   KC_4,               KC_5,               KC_6,               KC_ASTR,            KC_ENTER,
-        _______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,        XXXXXXX,                                    _______,    KC_PLUS,    KC_1,               KC_2,               KC_3,               KC_BSLS,            KC_TAB,
-        _______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            KC_DOT,             _______,            _______,
-                                                                                                                            _______,    _______,            _______,    _______,
-                                                                                                                                        _______,            _______,
-                                                                                                    _______,                _______,    _______,            _______,    _______,    KC_0
-    ),
+	//------------------------------------------------------------------------------------------------------------------------------------- Keypad --------------------------------------------------------------------------------------------------------------------------------
+	[PAD_L] = LAYOUT_ergodox_pretty(
+		KC_F12,             KC_F1,              KC_F2,              KC_F3,              KC_F4,              KC_F5,          _______,                                    _______,    KC_F6,      KC_F7,              KC_F8,              KC_F9,              KC_F10,             KC_F11,
+		_______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_MINUS,           _______,
+		TO(BASE_L),         KC_LEFT_ALT,        KC_LEFT_SHIFT,      KC_LEFT_CTRL,       KC_LEFT_GUI,        KC_LEFT_SHIFT,                                                          KC_EQUAL,   KC_4,               KC_5,               KC_6,               KC_ASTR,            KC_ENTER,
+		_______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,        XXXXXXX,                                    _______,    KC_PLUS,    KC_1,               KC_2,               KC_3,               KC_BSLS,            KC_TAB,
+		_______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            KC_DOT,             _______,            _______,
+		                                                                                                                        _______,    _______,            _______,    _______,
+		                                                                                                                                    _______,            _______,
+		                                                                                                _______,                _______,    _______,            _______,    _______,    KC_0
+	),
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Alternative Layout---------------------------------------------------------------------------------------------------------------------
-    [ALT_L] = LAYOUT_ergodox_pretty(
-        KC_EQUAL,           KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              _______,    KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
-        _______,            KC_Q,               KC_W,               KC_E,               KC_R,               KC_T,           KC_HOME,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               KC_BACKSLASH,
-        _______,            ALT_T(KC_A),        SFT_T(KC_S),        CTL_T(KC_D),        GUI_T(KC_F),        KC_G,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_QUOTE,
-        _______,            KC_Z,               KC_X,               KC_C,               KC_V,               KC_B,           KC_END,                                     KC_WH_D,    KC_N,       KC_M,               KC_COMMA,       KC_DOT,                 KC_SLASH,           _______,
-        KC_LEFT_CTRL,       KC_LEFT_SHIFT,      KC_LEFT,            KC_RIGHT,           KC_LGUI,                                                                                                KC_RIGHT_CTRL,      KC_DOWN,        KC_UP,                  KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
-                                                                                                                            KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
-                                                                                                                                        _______,             KC_DELETE,
-                                                                                                    LT(PAD_L,KC_SPC),       KC_TAB,     KC_ESCAPE,          CW_TOGG,    KC_BSPC,    LT(SYM_L,KC_ENTER)
-    ),
+	//------------------------------------------------------------------------------------------------------------------------------------- Alternative Layout---------------------------------------------------------------------------------------------------------------------
+	[ALT_L] = LAYOUT_ergodox_pretty(
+		KC_EQUAL,           KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              _______,    KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
+		XXXXXXX,            XXXXXXX,            KC_J,               KC_X,               KC_W,               KC_SEMICOLON,   KC_HOME,                                    KC_WH_U,    KC_F,       KC_P,               KC_K,           KC_G,                   XXXXXXX,            XXXXXXX,
+		// KC_LEFT_SHIFT,      KC_I,               KC_R,               KC_A,               KC_E,               KC_DOT,                                                                 KC_D,       KC_H,               KC_L,           KC_S,                   KC_C,               KC_Z,
+		KC_SLASH,           ALT_T(KC_I),        SFT_T(KC_R),        CTL_T(KC_A),        GUI_T(KC_E),        KC_DOT,                                                                 KC_D,       GUI_T(KC_H),        CTL_T(KC_L),    SFT_T(KC_S),            ALT_T(KC_C),        KC_Z,
+		XXXXXXX,            KC_Y,               KC_N,               KC_O,               KC_U,               KC_MINUS,       KC_END,                                     KC_WH_D,    KC_V,       KC_Q,               KC_T,           KC_M,                   KC_B,               XXXXXXX,
+		KC_LEFT_CTRL,       KC_LEFT_SHIFT,      KC_LEFT_ALT,        KC_LEFT,            KC_RIGHT,                                                                                               KC_DOWN,            KC_UP,          KC_LEFT_ALT,            KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
+		                                                                                                                        KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
+		                                                                                                                                    _______,             KC_DELETE,
+		                                                                                                LT(PAD_L,KC_SPC),       KC_TAB,     KC_ESCAPE,          CW_TOGG,    KC_BSPC,    LT(SYM_L,KC_ENTER)
+	),
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Symbols -------------------------------------------------------------------------------------------------------------------------------
-    [SYM_L] = LAYOUT_ergodox_pretty(
-         KC_EQUAL,          KC_EXCLAIM,         KC_AT,              KC_HASH,            KC_DOLLAR,          KC_PERCENT,     _______,                                    _______,    KC_CIRC,    KC_AMPERSAND,       KC_ASTERISK,        KC_LEFT_PAREN,      KC_RIGHT_PAREN,     _______,
-        _______,            XXXXXXX,            KC_EXCLAIM,         KC_LCBR,            KC_RCBR,            XXXXXXX,        XXXXXXX,                                    XXXXXXX,    XXXXXXX,    KC_LT,              KC_GT,              KC_QUESTION,        XXXXXXX,            _______,
-        _______,            KC_GRAVE,           KC_TILD,            KC_LEFT_PAREN,      KC_RIGHT_PAREN,     KC_PERCENT,                                                             KC_CIRC,    KC_COLON,           KC_COMMA,           KC_QUOTE,           KC_DOUBLE_QUOTE,    _______,
-        _______,            XXXXXXX,            KC_PLUS,            KC_LEFT_BRACKET,    KC_RIGHT_BRACKET,   XXXXXXX,        XXXXXXX,                                    XXXXXXX,    XXXXXXX,    KC_PIPE,            KC_BACKSLASH,       _______,            _______,            _______,
-        _______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,                                                                                                _______,            _______,            _______,            _______,            _______,
-                                                                                                                            _______,    _______,            _______,    _______,
-                                                                                                                                        _______,            _______,
-                                                                                                            KC_UNDERSCORE,  KC_EQUAL,   _______,            _______,    _______,        _______
-    ),
+	//------------------------------------------------------------------------------------------------------------------------------------- Symbols -------------------------------------------------------------------------------------------------------------------------------
+	[SYM_L] = LAYOUT_ergodox_pretty(
+		KC_EQUAL,           KC_EXCLAIM,         KC_AT,              KC_HASH,            KC_DOLLAR,          KC_PERCENT,     _______,                                    _______,    KC_CIRC,    KC_AMPERSAND,       KC_ASTERISK,        KC_LEFT_PAREN,      KC_RIGHT_PAREN,     _______,
+		_______,            XXXXXXX,            KC_EXCLAIM,         KC_LCBR,            KC_RCBR,            KC_QUESTION,    XXXXXXX,                                    XXXXXXX,    KC_AT,      KC_LT,              KC_GT,              KC_PLUS,            _______,            _______,
+		_______,            TD(TD_ALT_ASTR),    KC_DOLLAR,          TD(TD_CTL_LPRN),    TD(TD_GUI_RPRN),    KC_PERCENT,                                                             KC_AMPR,    TD(TD_GUI_COLN),    CTL_T(KC_COMMA),    KC_QUOTE,           TD(TD_ALT_DQUO),    _______,
+		_______,            KC_TILDE,           KC_HASH,            KC_LEFT_BRACKET,    KC_RIGHT_BRACKET,   KC_GRAVE,       XXXXXXX,                                    XXXXXXX,    KC_CIRC,    KC_PIPE,            KC_BACKSLASH,       _______,            _______,            _______,
+		_______,            XXXXXXX,            XXXXXXX,            XXXXXXX,            XXXXXXX,                                                                                                _______,            _______,            _______,            _______,            _______,
+		                                                                                                                        _______,    _______,            _______,    _______,
+		                                                                                                                                    _______,            _______,
 
-    //------------------------------------------------------------------------------------------------------------------------------------- Navigation ----------------------------------------------------------------------------------------------------------------------------
-    [NAV_L] = LAYOUT_ergodox_pretty(
-        _______,            _______,            _______,            _______,            KC_END,             _______,        _______,                                    _______,    _______,    _______,            _______,            _______,            _______,            _______,
-        _______,            _______,            _______,            _______,            _______,            _______,        _______,                                    _______,    KC_HOME,    KC_PGDN,            KC_PGUP,            KC_END,             _______,            _______,
-        _______,            _______,            C(KC_X),            C(KC_C),            RCS(KC_V),          _______,                                                                KC_LEFT,    KC_DOWN,            KC_UP,              KC_RGHT,            _______,            _______,
-        _______,            _______,            _______,            _______,            _______,            _______,        _______,                                    _______,    KC_WH_L,    KC_WH_D,            KC_WH_U,            KC_WH_R,            _______,            _______,
-        _______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            _______,            _______,            _______,
-                                                                                                                            _______,    _______,            _______,    _______,
-                                                                                                                                        _______,            _______,
-                                                                                                            _______,        _______,    _______,            _______,    _______,        _______
-),
+		                                                                                                        KC_UNDERSCORE,  KC_EQUAL,   _______,            _______,    _______,        _______
+	),
 
-    //-------------------------------------------------------------------------------------------------------------------------------------- Media --------------------------------------------------------------------------------------------------------------------------------
-    [MED_L] = LAYOUT_ergodox_pretty(
-        _______,            HSV_0,              HSV_2,              HSV_3,              HSV_4,              HSV_5,          _______,                                    _______,    _______,    _______,            _______,            _______,            _______,            MAC_LOCK,
-        TO(BASE_L),         _______,            _______,            RGB_SPD,            RGB_SPI,            RGB_SLD,        _______,                                    _______,    _______,    KC_BRID,            KC_BRIU,            _______,            _______,            KC_SLEP,
-        _______,            _______,            LED_LEVEL,          RGB_VAD,            RGB_VAI,            RGB_TOG,                                                                KC_MPLY,    KC_VOLD,            KC_VOLU,            KC_MUTE,            _______,            KC_WAKE,
-        _______,            _______,            TOGGLE_LAYER_COLOR, RGB_HUD,            RGB_HUI,            RGB_MOD,        _______,                                    _______,    KC_MSTP,    KC_MPRV,            KC_MNXT,            _______,            _______,            KC_PWR,
-        _______,            _______,            _______,            RGB_SAD,            RGB_SAI,                                                                                                _______,            _______,            _______,            _______,            _______,
-                                                                                                                            _______,    _______,            _______,    _______,
-                                                                                                                                        _______,            _______,
-                                                                                                            KC_MYCM,        KC_WSCH,    _______,            _______,    KC_WHOM,    KC_CALC
-    ),
+	//------------------------------------------------------------------------------------------------------------------------------------- Navigation ----------------------------------------------------------------------------------------------------------------------------
+	[NAV_L] = LAYOUT_ergodox_pretty(
+		_______,            _______,            _______,            _______,            KC_END,             _______,        _______,                                    _______,    _______,    _______,            _______,            _______,            _______,            _______,
+		_______,            _______,            _______,            _______,            _______,            _______,        _______,                                    _______,    KC_HOME,    KC_PGDN,            KC_PGUP,            KC_END,             _______,            _______,
+		_______,            _______,            C(KC_X),            C(KC_C),            RCS(KC_V),          _______,                                                                KC_LEFT,    KC_DOWN,            KC_UP,              KC_RGHT,            _______,            _______,
+		_______,            _______,            _______,            _______,            _______,            _______,        _______,                                    _______,    KC_WH_L,    KC_WH_D,            KC_WH_U,            KC_WH_R,            _______,            _______,
+		_______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            _______,            _______,            _______,
+		                                                                                                                        _______,    _______,            _______,    _______,
+		                                                                                                                                    _______,            _______,
+		                                                                                                        _______,        _______,    _______,            _______,    _______,        _______
+	),
+
+	//-------------------------------------------------------------------------------------------------------------------------------------- Media --------------------------------------------------------------------------------------------------------------------------------
+	[MED_L] = LAYOUT_ergodox_pretty(
+		_______,            HSV_0,              HSV_2,              HSV_3,              HSV_4,              HSV_5,          _______,                                    _______,    _______,    _______,            _______,            _______,            _______,            MAC_LOCK,
+		TO(BASE_L),         _______,            _______,            RGB_SPD,            RGB_SPI,            RGB_SLD,        _______,                                    _______,    _______,    KC_BRID,            KC_BRIU,            _______,            _______,            KC_SLEP,
+		_______,            _______,            LED_LEVEL,          RGB_VAD,            RGB_VAI,            RGB_TOG,                                                                KC_MPLY,    KC_VOLD,            KC_VOLU,            KC_MUTE,            _______,            KC_WAKE,
+		_______,            _______,            TOGGLE_LAYER_COLOR, RGB_HUD,            RGB_HUI,            RGB_MOD,        _______,                                    _______,    KC_MSTP,    KC_MPRV,            KC_MNXT,            _______,            _______,            KC_PWR,
+		_______,            _______,            _______,            RGB_SAD,            RGB_SAI,                                                                                                _______,            _______,            _______,            _______,            _______,
+		                                                                                                                        _______,    _______,            _______,    _______,
+		                                                                                                                                    _______,            _______,
+		                                                                                                        KC_MYCM,        KC_WSCH,    _______,            _______,    KC_WHOM,    KC_CALC
+	),
 
 };
 
@@ -132,89 +151,146 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //                                                                                                                                         _______,            _______,
 //                                                                                                             _______,        _______,    _______,            _______,    _______,        _______
 // ),
+// clang-format on
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
+	tap_dance_action_t *action;
 
+	switch (keycode) {
+	case TD(TD_ALT_ASTR):
+	case TD(TD_ALT_DQUO):
+	case TD(TD_CTL_LPRN):
+	case TD(TD_GUI_COLN):
+	case TD(TD_GUI_RPRN):
+		action = &tap_dance_actions[TD_INDEX(keycode)];
+		if (!record->event.pressed && action->state.count &&
+		    !action->state.finished) {
+			td_tap_hold_t *tap_hold =
+				(td_tap_hold_t *)action->user_data;
+			tap_code16(tap_hold->tap);
+		}
+		return true;
+	case MAC_LOCK:
+		HCS(0x19E);
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case MAC_LOCK:
-            HCS(0x19E);
+	case RGB_SLD:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+		}
+		return false;
+	case HSV_0:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+			rgblight_sethsv(0, 255, 255);
+		}
+		return false;
+	case HSV_2:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+			rgblight_sethsv(43, 255, 255);
+		}
+		return false;
+	case HSV_3:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+			rgblight_sethsv(86, 255, 255);
+		}
+		return false;
+	case HSV_4:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+			rgblight_sethsv(129, 255, 255);
+		}
+		return false;
+	case HSV_5:
+		if (record->event.pressed) {
+			rgblight_mode(1);
+			rgblight_sethsv(172, 255, 255);
+		}
+		return false;
+	}
+	return true;
+}
+void td_tap_hold_finished(tap_dance_state_t *state, void *user_data)
+{
+	td_tap_hold_t *tap_hold = (td_tap_hold_t *)user_data;
 
-        case RGB_SLD:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-            }
-            return false;
-        case HSV_0:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-                rgblight_sethsv(0,255,255);
-            }
-            return false;
-        case HSV_2:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-                rgblight_sethsv(43,255,255);
-            }
-            return false;
-        case HSV_3:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-                rgblight_sethsv(86,255,255);
-            }
-            return false;
-        case HSV_4:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-                rgblight_sethsv(129,255,255);
-            }
-            return false;
-        case HSV_5:
-            if (record->event.pressed) {
-                rgblight_mode(1);
-                rgblight_sethsv(172,255,255);
-            }
-            return false;
-    }
-    return true;
+	if (state->pressed) {
+		if (state->count == 1
+#ifndef PERMISSIVE_HOLD
+		    && !state->interrupted
+#endif
+		) {
+			register_code16(tap_hold->hold);
+			tap_hold->held = tap_hold->hold;
+		} else {
+			register_code16(tap_hold->tap);
+			tap_hold->held = tap_hold->tap;
+		}
+	}
 }
 
-uint8_t layer_state_set_user(uint8_t state) {
-    uint8_t layer = biton(state);
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-    ergodox_right_led_3_off();
-    switch (layer) {
-        case 1:
-            ergodox_right_led_1_on();
-            break;
-        case 2:
-            ergodox_right_led_2_on();
-            break;
-        case 3:
-            ergodox_right_led_3_on();
-            break;
-        case 4:
-            ergodox_right_led_1_on();
-            ergodox_right_led_2_on();
-            break;
-        case 5:
-            ergodox_right_led_1_on();
-            ergodox_right_led_3_on();
-            break;
-        case 6:
-            ergodox_right_led_2_on();
-            ergodox_right_led_3_on();
-            break;
-        case 7:
-            ergodox_right_led_1_on();
-            ergodox_right_led_2_on();
-            ergodox_right_led_3_on();
-            break;
-        default:
-            break;
-    }
-    return state;
+void td_tap_hold_reset(tap_dance_state_t *state, void *user_data)
+{
+	td_tap_hold_t *tap_hold = (td_tap_hold_t *)user_data;
 
+	if (tap_hold->held != KC_NO) {
+		unregister_code16(tap_hold->held);
+		tap_hold->held = KC_NO;
+	}
+}
+
+#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold)                             \
+	{                                                                \
+		.fn = { NULL, td_tap_hold_finished, td_tap_hold_reset }, \
+		.user_data = (void *)&((td_tap_hold_t){ tap, hold, 0 }), \
+	}
+
+tap_dance_action_t tap_dance_actions[] = {
+	[TD_ALT_ASTR] = ACTION_TAP_DANCE_TAP_HOLD(KC_ASTERISK, KC_LEFT_ALT),
+	[TD_ALT_DQUO] = ACTION_TAP_DANCE_TAP_HOLD(KC_DOUBLE_QUOTE, KC_LEFT_ALT),
+	[TD_CTL_LPRN] = ACTION_TAP_DANCE_TAP_HOLD(KC_LEFT_PAREN, KC_LEFT_CTRL),
+	[TD_GUI_COLN] = ACTION_TAP_DANCE_TAP_HOLD(KC_COLON, KC_LEFT_GUI),
+	[TD_GUI_RPRN] = ACTION_TAP_DANCE_TAP_HOLD(KC_RIGHT_PAREN, KC_LEFT_GUI),
+};
+
+uint8_t layer_state_set_user(uint8_t state)
+{
+	uint8_t layer = biton(state);
+	ergodox_board_led_off();
+	ergodox_right_led_1_off();
+	ergodox_right_led_2_off();
+	ergodox_right_led_3_off();
+	switch (layer) {
+	case 1:
+		ergodox_right_led_1_on();
+		break;
+	case 2:
+		ergodox_right_led_2_on();
+		break;
+	case 3:
+		ergodox_right_led_3_on();
+		break;
+	case 4:
+		ergodox_right_led_1_on();
+		ergodox_right_led_2_on();
+		break;
+	case 5:
+		ergodox_right_led_1_on();
+		ergodox_right_led_3_on();
+		break;
+	case 6:
+		ergodox_right_led_2_on();
+		ergodox_right_led_3_on();
+		break;
+	case 7:
+		ergodox_right_led_1_on();
+		ergodox_right_led_2_on();
+		ergodox_right_led_3_on();
+		break;
+	default:
+		break;
+	}
+	return state;
 };
