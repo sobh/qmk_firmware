@@ -1,7 +1,8 @@
+#include "keycodes.h"
 #include QMK_KEYBOARD_H
 #include "version.h"
 
-void set_mod_leds(void);
+#include <lib/achordion/achordion.h>
 // Layers
 enum layers {
 	BASE_L, // Default
@@ -32,11 +33,30 @@ enum td_keycodes {
 	TD_GUI_RPRN,   // Hold = Super  , Tap = ')'
 };
 
+// // Keyboard Zones
+// enum kb_zones {
+// 	ZN_LP,      // Left  Palm
+// 	ZN_LT,      // Left  Thumb
+// 	ZN_RP,      // Right Palm
+// 	ZN_RH,      // Right Thumb
+// };
+
 typedef struct {
 	uint16_t tap;
 	uint16_t hold;
 	uint16_t held;
 } td_tap_hold_t;
+
+// const enum kb_zones keyboard_zones[MATRIX_ROWS][MATRIX_COLS] = LAYOUT_ergodox_pretty(
+// 		ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP,           ZN_LP,                              XXXXXXX,  KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
+// 		ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP,               ZN_LP,           ZN_LP,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               KC_DOUBLE_QUOTE,
+// 		ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP,        ZN_LP,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_QUOTE,
+// 		ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP,               ZN_LP,           ZN_LP,                                     KC_WH_D,    KC_N,       KC_M,               XXXXXXX,        KC_DOT,                 KC_SLASH,           KC_COMMA,
+// 		ZN_LP, ZN_LP, ZN_LP, ZN_LP, ZN_LP,                                                                                               KC_DOWN,            KC_UP,          KC_LEFT_ALT,            KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
+// 		                                                                                                                        KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
+// 		                                                                                                                                    KC_SLEP,            KC_DELETE,
+// 		                                                                                            LT(PAD_L,KC_SPC),     GUI_T(KC_TAB),   LT(NAV_L,KC_ESC),    CW_TOGG,    RCTL_T(KC_BACKSPACE),    LT(SYM_L,KC_ENTER)
+// 		);
 
 // clang-format off
 /* Keymap 0: Basic layer
@@ -65,9 +85,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	//------------------------------------------------------------------------------------------------------------------------------------- Base ----------------------------------------------------------------------------------------------------------------------------------
 	[BASE_L] = LAYOUT_ergodox_pretty(
-		KC_EQUAL,           KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              XXXXXXX,    KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               KC_MINUS,
-		KC_LEFT_GUI,        XXXXXXX,            KC_W,               KC_E,               KC_R,               KC_T,           KC_HOME,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               KC_BACKSLASH,
-		KC_Q,               ALT_T(KC_A),        SFT_T(KC_S),        CTL_T(KC_D),        GUI_T(KC_F),        KC_G,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_QUOTE,
+		XXXXXXX,            KC_1,               KC_2,               KC_3,               KC_4,               KC_5,           KC_CALCULATOR,                              XXXXXXX,    KC_6,       KC_7,               KC_8,           KC_9,                   KC_0,               XXXXXXX,
+		XXXXXXX,            XXXXXXX,            KC_W,               KC_E,               KC_R,               KC_T,           KC_HOME,                                    KC_WH_U,    KC_Y,       KC_U,               KC_I,           KC_O,                   KC_P,               KC_BACKSLASH,
+		KC_Q,               ALT_T(KC_A),        SFT_T(KC_S),        CTL_T(KC_D),        GUI_T(KC_F),        KC_G,                                                                   KC_H,       GUI_T(KC_J),        CTL_T(KC_K),    SFT_T(KC_L),            ALT_T(KC_SCLN),     KC_Z,
 		LSFT_T(KC_Z),       XXXXXXX,            KC_X,               KC_C,               KC_V,               KC_B,           KC_END,                                     KC_WH_D,    KC_N,       KC_M,               XXXXXXX,        KC_DOT,                 KC_SLASH,           RSFT_T(KC_COMMA),
 		KC_LEFT_CTRL,       KC_LEFT_ALT,        KC_GRAVE,           KC_LEFT,            KC_RIGHT,                                                                                               KC_DOWN,            KC_UP,          KC_LEFT_ALT,            KC_RIGHT_SHIFT,     KC_RIGHT_CTRL,
 		                                                                                                                        KC_PSCR,    TG(MED_L),          TG(PAD_L),  TG(NAV_L),
@@ -78,7 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	//------------------------------------------------------------------------------------------------------------------------------------- Keypad --------------------------------------------------------------------------------------------------------------------------------
 	[PAD_L] = LAYOUT_ergodox_pretty(
 		KC_F12,             KC_F1,              KC_F2,              KC_F3,              KC_F4,              KC_F5,          _______,                                    _______,    KC_F6,      KC_F7,              KC_F8,              KC_F9,              KC_F10,             KC_F11,
-		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,            XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_BACKSLASH,       _______,
+		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_BACKSLASH,       _______,
 		TO(BASE_L),         KC_LEFT_ALT,        SFT_T(KC_LEFT),     CTL_T(KC_UP),       GUI_T(KC_DOWN),     KC_RIGHT,                                                               KC_EQUAL,   GUI_T(KC_4),        CTL_T(KC_5),        SFT_T(KC_6),        TD(TD_ALT_ASTR),    KC_ENTER,
 		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           XXXXXXX,        XXXXXXX,                                    _______,    KC_PLUS,    KC_1,               KC_2,               KC_3,               KC_DOT,            KC_TAB,
 		_______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            _______,            _______,            _______,
@@ -90,9 +110,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	//------------------------------------------------------------------------------------------------------------------------------------- Symbols -------------------------------------------------------------------------------------------------------------------------------
 	[SYM_L] = LAYOUT_ergodox_pretty(
 		KC_PLUS,            KC_EXCLAIM,         KC_AT,              KC_HASH,            KC_DOLLAR,          KC_PERCENT,     _______,                                    _______,    KC_CIRC,    KC_AMPERSAND,       KC_ASTERISK,        KC_LEFT_PAREN,      KC_RIGHT_PAREN,     _______,
-		_______,            XXXXXXX,            KC_EXCLAIM,         KC_LCBR,            KC_RCBR,            KC_QUESTION,    XXXXXXX,                                    XXXXXXX,    XXXXXXX,    KC_LT,              KC_GT,              KC_PLUS,            XXXXXXX,            _______,
-		_______,            TD(TD_ALT_TILDE),   KC_HASH,            TD(TD_CTL_LPRN),    TD(TD_GUI_RPRN),    KC_PERCENT,                                                             KC_AMPR,    TD(TD_GUI_COLN),    TD(TD_CTL_DOLLAR),  KC_ASTERISK,        ALT_T(KC_SCLN),     KC_DOUBLE_QUOTE,
-		_______,            KC_GRAVE,           KC_SPACE,           KC_LEFT_BRACKET,    KC_RIGHT_BRACKET,   KC_CIRC,        XXXXXXX,                                    XXXXXXX,    KC_AT,      KC_PIPE,            KC_BACKSPACE,       _______,            _______,            _______,
+		_______,            XXXXXXX,            KC_EXCLAIM,         KC_LCBR,            KC_RCBR,            KC_PERCENT,     XXXXXXX,                                    XXXXXXX,    KC_AMPR,    KC_LT,              KC_GT,              KC_PLUS,            XXXXXXX,            _______,
+		_______,            TD(TD_ALT_DQUO),    KC_QUOTE,           TD(TD_CTL_LPRN),    TD(TD_GUI_RPRN),    KC_TILDE,                                                               KC_BSLS,    TD(TD_GUI_COLN),    CTL_T(KC_COMMA),    KC_DOLLAR,          KC_LEFT_ALT,        XXXXXXX,
+		_______,            KC_SPACE,           KC_QUESTION,        KC_LEFT_BRACKET,    KC_RIGHT_BRACKET,   KC_CIRC,        XXXXXXX,                                    XXXXXXX,    KC_AT,      KC_PIPE,            KC_GRAVE,           KC_BACKSPACE,       _______,            _______,
 		_______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            _______,            _______,            _______,
 		                                                                                                                        _______,    _______,            _______,    _______,
 		                                                                                                                                    _______,            _______,
@@ -141,9 +161,40 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ),
 // clang-format on
 
+static bool on_thumb_cluster(keypos_t pos) {
+#ifdef SPLIT_KEYBOARD
+	return pos.col == MATRIX_COLS - 1;
+#else
+	return (MATRIX_ROWS < MATRIX_COLS) ? pos.row == MATRIX_ROWS - 1
+                                           : pos.col == MATRIX_COLS - 1;
+#endif
+}
+
+bool opposite_clusters(const keyrecord_t* tap_hold_record, const keyrecord_t* other_record)
+{
+	return on_thumb_cluster(tap_hold_record->event.key) !=
+		on_thumb_cluster(other_record->event.key);
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
+		uint16_t other_keycode,    keyrecord_t* other_record)
+{
+	return achordion_opposite_hands(tap_hold_record, other_record) ||
+		opposite_clusters(tap_hold_record, other_record);
+}
+
+void matrix_scan_user(void)
+{
+	achordion_task();
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
 	tap_dance_action_t *action;
+
+	if (!process_achordion(keycode, record)) {
+		return false;
+	}
 
 	switch (keycode) {
 	case QK_TAP_DANCE...QK_TAP_DANCE_MAX:
@@ -196,6 +247,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 	}
 	return true;
 }
+
 void td_tap_hold_finished(tap_dance_state_t *state, void *user_data)
 {
 	td_tap_hold_t *tap_hold = (td_tap_hold_t *)user_data;

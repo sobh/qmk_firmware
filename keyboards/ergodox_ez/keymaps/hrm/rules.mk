@@ -10,5 +10,8 @@ CONSOLE_ENABLE = no
 COMMAND_ENABLE = no
 LTO_ENABLE = yes
 
+# Libraries
+LIB_SRC += ${LIB_PATH}/achordion/achordion.c
+
 # https://docs.qmk.fm/#/custom_quantum_functions?id=deferred-execution
 DEFERRED_EXEC_ENABLE = yes
