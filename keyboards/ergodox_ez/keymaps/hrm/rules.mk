@@ -1,6 +1,6 @@
 # Set any rules.mk overrides for your specific keymap here.
 # See rules at https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
-ORYX_ENABLE = yes
+# ORYX_ENABLE = yes
 
 # QMK
 TAP_DANCE_ENABLE = yes
