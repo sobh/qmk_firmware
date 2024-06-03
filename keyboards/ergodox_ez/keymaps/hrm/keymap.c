@@ -1,5 +1,4 @@
 #include "keycodes.h"
-#include "quantum_keycodes.h"
 #include QMK_KEYBOARD_H
 
 #include <lib/achordion/achordion.h>
@@ -111,9 +110,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	//------------------------------------------------------------------------------------------------------------------------------------- Keypad --------------------------------------------------------------------------------------------------------------------------------
 	[PAD_L] = LAYOUT_ergodox_pretty(
 		KC_F12,             KC_F1,              KC_F2,              KC_F3,              KC_F4,              KC_F5,          _______,                                    _______,    KC_F6,      KC_F7,              KC_F8,              KC_F9,              KC_F10,             KC_F11,
-		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_BACKSLASH,       _______,
+		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           XXXXXXX,        XXXXXXX,                                    _______,    KC_MINUS,   KC_7,               KC_8,               KC_9,               KC_BACKSLASH,       KC_COMMA,
 		TO(BASE_L),         KC_LEFT_ALT,        SFT_T(KC_LEFT),     CTL_T(KC_UP),       GUI_T(KC_DOWN),     KC_RIGHT,                                                               KC_EQUAL,   GUI_T(KC_4),        CTL_T(KC_5),        SFT_T(KC_6),        TD(TD_ALT_ASTR),    KC_ENTER,
-		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           XXXXXXX,        XXXXXXX,                                    _______,    KC_PLUS,    KC_1,               KC_2,               KC_3,               KC_DOT,            KC_TAB,
+		_______,            XXXXXXX,            KC_CUT,             KC_COPY,            KC_PASTE,           KC_COMMA,       XXXXXXX,                                    _______,    KC_PLUS,    KC_1,               KC_2,               KC_3,               KC_DOT,             KC_TAB,
 		_______,            _______,            _______,            _______,            _______,                                                                                                _______,            _______,            _______,            _______,            _______,
 		                                                                                                                        _______,    _______,            _______,    _______,
 		                                                                                                                                    _______,            _______,
